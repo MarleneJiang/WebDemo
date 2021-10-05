@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>天气组件</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/qweather-icons@1.0.2/font/qweather-icons.css">
+    <style type="text/css">
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --marlene-font-color: #fff;
+                --marlene-shaddow-color: 0 0 50px -5px #0000004C;
+                --marlene-shaddow-hover-color: 0 0 40px -5px #00000033;
+                --marlene-background-color: #222831;
+                --marlene-body-background: #343d4b;
+                --marlene-background-hover-color: #fff;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --marlene-font-color: #000;
+                --marlene-shaddow-color: 0 4px 10px rgba(0, 2, 4, 0.06), 0 0 1px rgba(0, 2, 4, 0.11);;
+                --marlene-shaddow-hover-color: 0 0 40px -5px rgba(2, 2, 2, 0.2);
+                --marlene-background-color: #fff;
+                --marlene-body-background: #f2f5f8; /*url('http://docs.nbyg.club/demo/demo3/static/image/background.png');*/
+                --marlene-background-hover-color: #000;
+            }
+        }
+
+        .icon {
+            width: 6rem;
+            height: 6rem;
+            font-size: 6rem;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        .icons {
+            width: 3rem;
+            height: 3rem;
+            font-size: 3rem;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        .icons-md {
+            width: 3.4rem;
+            height: 3.4rem;
+            font-size: 3.4rem;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        .icons-sm {
+            width: 1rem;
+            height: 1rem;
+            font-size: 1rem;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        .icons-xd {
+            width: 2rem;
+            height: 2rem;
+            font-size: 2rem;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--marlene-body-background);
+            display: -webkit-box;
+            display: -ms-flexbox;
+            /*display: flex;*/
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+        }
+
+        .marlene-weather-card {
+            border-radius: 25px;
+            -webkit-box-shadow: 0 0 70px -10px var(--marlene-shaddow-color);
+            box-shadow: 0 0 70px -10px var(--marlene-shaddow-color);
+            background-color: var(--marlene-background-color);
+            color: var(--marlene-font-color);
+            width: 85%;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+
+        }
+
+        @media (min-width: 28rem) {
+            .marlene-weather-card {
+                width: 24rem;
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+        }
+
+        @media (max-width: 414px) {
+            .marlene-hide {
+                display: none;
+            }
+
+            .marlene-week-list {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            }
+
+        }
+
+        .marlene-weather-header {
+            display: flex;
+            justify-content: center;
+            /*align-content: space-around;*/
+            align-items: center;
+            line-height: 1.75rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+
+        }
+
+        .marlene-l-text {
+            text-align: left;
+            letter-spacing: 0.2em;
+        }
+
+        .marlene-text-lg {
+            font-size: 3rem;
+            margin-bottom: .9rem;
+        }
+
+        .marlene-text-item {
+            font-size: 1rem;
+
+        }
+
+        .marlene-item-value {
+            font-size: 1.6rem;
+            /*color: aquamarine;*/
+            font-weight: 600;
+        }
+
+        .marlene-c-text {
+            text-align: center;
+        }
+
+        .marlene-ding {
+            border-radius: 9999px;
+            color: var(--marlene-background-color);
+            font-size: 1rem;
+            background-color: greenyellow;
+            letter-spacing: 0rem;
+            padding: 0 .5rem;
+        }
+
+        .marlene-item {
+            /*display: flex;*/
+            /*justify-content: space-between;*/
+            /*letter-spacing: .25rem;*/
+            -webkit-box-shadow: var(--marlene-shaddow-color);
+            box-shadow: var(--marlene-shaddow-color);
+            border-radius: 10px;
+            background-color: var(--marlene-background-color);
+            padding: 1rem;
+            /*margin-left: .4rem;*/
+            text-align: center;
+            cursor: pointer;
+            -webkit-transition: 200ms ease;
+            -o-transition: 200ms ease;
+            transition: 200ms ease;
+        }
+
+        .marlene-item:hover {
+            -webkit-transform: scale(1.1);
+            -ms-transform: scale(1.1);
+            transform: scale(1.1);
+            background: var(--marlene-background-hover-color);
+            color: var(--marlene-background-color);
+            -webkit-box-shadow: var(--marlene-shaddow-hover-color);
+            box-shadow: var(--marlene-shaddow-hover-color);
+        }
+
+        .marlene-weather-detail {
+            padding: .3rem 0rem 0rem 0rem;
+            list-style-type: none;
+            margin: .5rem 0;
+            display: flex;
+            justify-content: space-between;
+            /*-webkit-box-shadow: rgba(0, 0, 0, 0.3);*/
+            /*box-shadow: rgba(0, 0, 0, 0.3);*/
+            /*border-radius: 10px;*/
+            /*background: #272b31;*/
+        }
+
+        .marlene-week-list {
+            list-style-type: none;
+            padding: 0;
+            -webkit-box-shadow: var(--marlene-shaddow-color);
+            box-shadow: var(--marlene-shaddow-color);
+            border-radius: 10px;
+            background-color: var(--marlene-background-color);
+            display: grid;
+            /*justify-content: space-around;*/
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .marlene-week-list > li {
+            float: left;
+            padding: .8rem;
+            cursor: pointer;
+            -webkit-transition: 200ms ease;
+            -o-transition: 200ms ease;
+            transition: 200ms ease;
+            border-radius: 10px;
+            text-align: center;
+
+        }
+
+        .marlene-week-list > li:hover {
+            -webkit-transform: scale(1.1);
+            -ms-transform: scale(1.1);
+            transform: scale(1.1);
+            background: var(--marlene-background-hover-color);
+            color: var(--marlene-background-color);
+            -webkit-box-shadow: var(--marlene-shaddow-hover-color);
+            box-shadow: var(--marlene-shaddow-hover-color);
+        }
+
+        .marlene-week-list > li.active {
+            background: var(--marlene-font-color);
+            color: var(--marlene-background-color);
+            border-radius: 10px;
+        }
+
+        .marlene-week-list > li .marlene-day-name {
+            display: block;
+            margin: .2rem 0 0 0;
+            text-align: center;
+        }
+
+        .marlene-week-list > li .marlene-day-temp {
+            display: block;
+            text-align: center;
+            margin: .2rem 0 0 0;
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .marlene-weather-live {
+            list-style-type: none;
+            justify-content: space-between;
+        }
+
+        .marlene-live-list > li {
+            list-style-type: none;
+            padding: 1rem;
+            margin-top: .7rem;
+            -webkit-box-shadow: var(--marlene-shaddow-color);
+            box-shadow: var(--marlene-shaddow-color);
+            border-radius: 10px;
+            background-color: var(--marlene-background-color);
+            -webkit-transition: 200ms ease;
+            -o-transition: 200ms ease;
+            transition: 200ms ease;
+            display: flex;
+            align-items: center;
+            /*justify-content: space-around;*/
+        }
+
+        .marlene-live-list {
+            padding: 0;
+        }
+
+        .marlene-live-list > li:hover {
+            -webkit-transform: scale(1.1);
+            -ms-transform: scale(1.1);
+            transform: scale(1.1);
+            background: var(--marlene-background-hover-color);
+            color: var(--marlene-background-color);
+            -webkit-box-shadow: var(--marlene-shaddow-hover-color);
+            box-shadow: var(--marlene-shaddow-hover-color);
+        }
+
+        .live-container {
+            /*display: flex;*/
+        }
+
+        .marlene-header-detail {
+            display: flex;
+            font-size: 1.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .marlene-site {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            margin-top: -.5rem;
+            -webkit-transition: 200ms ease;
+            -o-transition: 200ms ease;
+            transition: 200ms ease;
+            border-radius: 9999px;
+            padding: 0 .5rem;
+            cursor: pointer;
+        }
+
+        .marlene-site:hover {
+            -webkit-transform: scale(1.1);
+            -ms-transform: scale(1.1);
+            transform: scale(1.1);
+            background: var(--marlene-background-hover-color);
+            color: var(--marlene-background-color);
+            -webkit-box-shadow: var(--marlene-shaddow-hover-color);
+            box-shadow: var(--marlene-shaddow-hover-color);
+            padding: 0 .5rem
+        }
+
+        .marlene-tem {
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        .marlene-tems {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+
+        }
+
+        .marlene-live-name {
+            font-size: 1.3rem;
+        }
+
+        .marlene-ml-5 {
+            margin-left: .5rem;
+        }
+
+        .marlene-live-title {
+            font-size: .9rem;
+            text-align: center;
+            margin-top: .3rem;
+        }
+
+        .marlene-live-temp {
+            word-break: break-all;
+            font-size: .9rem;
+            margin-top: .3rem;
+        }
+
+        .marlene-weather-charts {
+            -webkit-box-shadow: var(--marlene-shaddow-color);
+            box-shadow: var(--marlene-shaddow-color);
+            border-radius: 10px;
+            background-color: var(--marlene-background-color);
+            -webkit-transition: 200ms ease;
+            -o-transition: 200ms ease;
+            transition: 200ms ease;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div class="marlene-weather-card">
+    <div class="marlene-site" style="">
+        <svg class="icons-sm" aria-hidden="true">
+            <use xlink:href="#marlene-w-dingwei"></use>
+        </svg>
+        <div id="location">宁波市</div>
+    </div>
+    <div class="marlene-weather-header">
+        <div>
+            <i class="icon" id="qi_icon"></i>
+            <!--            <div class="marlene-c-text marlene-ding">-->
+            <!--                📍杭州市-->
+            <!--            </div>-->
+        </div>
+        <div class="marlene-l-text" style="margin-left: 1.5rem">
+            <div class="marlene-text-lg" id="wd">28°</div>
+            <div class="marlene-header-detail">
+                <div class="" id="tq">晴</div>
+                <div class="marlene-ding" id="kq" style="color: #222831">
+                    AQI 优
+                </div>
+            </div>
+
+            <!--            <div class="" style="font-size: .8rem;font-weight: 700;">各类人群可自由活动</div>-->
+        </div>
+    </div>
+    <div class="marlene-weather-detail">
+        <div class="marlene-item marlene-text-item">
+            <div class="marlene-item-value" id="sd">59%</div>
+            <div class="marlene-item-name">湿度</div>
+        </div>
+        <div class="marlene-item marlene-text-item">
+            <div class="marlene-item-value" id="fl">15</div>
+            <div class="marlene-item-name">风力</div>
+        </div>
+        <div class="marlene-item marlene-text-item">
+            <div class="marlene-item-value" id="fx">北风</div>
+            <div class="marlene-item-name">风向</div>
+        </div>
+        <div class="marlene-item marlene-text-item marlene-hide">
+            <div class="marlene-item-value" id="zwx">4</div>
+            <div class="marlene-item-name">紫外线</div>
+        </div>
+    </div>
+    <div class="marlene-weather-weekly">
+        <div class="week-container">
+            <ul class="marlene-week-list">
+                <li class="active">
+                    <i class=" icons" id="qi_icons0"></i>
+                    <span class="marlene-day-name" id="xq0">今日</span>
+                    <span class="marlene-day-temp" id="gdw0">29°~30°</span>
+                </li>
+                <li>
+                    <i class="icons" id="qi_icons1"></i>
+                    <span class="marlene-day-name" id="xq1">星期五</span>
+                    <span class="marlene-day-temp" id="gdw1">21°~27°</span></li>
+                <li>
+                    <i class="icons" id="qi_icons2"></i>
+                    <span class="marlene-day-name" id="xq2">星期六</span>
+                    <span class="marlene-day-temp" id="gdw2">08°~10°</span></li>
+                <li class="marlene-hide">
+                    <i class="icons" id="qi_icons3"></i>
+                    <span class="marlene-day-name" id="xq3">星期天</span>
+                    <span class="marlene-day-temp" id="gdw3">08°~10°</span></li>
+
+            </ul>
+        </div>
+    </div>
+    <div class="marlene-weather-charts">
+        <div style="padding-top: 1.5rem;margin-bottom: -3.5rem">
+            <div class="marlene-tems">
+                <div class="marlene-tem">
+                    <svg class="icons-xd" aria-hidden="true">
+                        <use xlink:href="#marlene-w-gaowenyujing"></use>
+                    </svg>
+                    <div id="zgw">最高温: 21°</div>
+                </div>
+                <div class="marlene-tem">
+                    <svg class="icons-xd" aria-hidden="true">
+                        <use xlink:href="#marlene-w-diwenyujing"></use>
+                    </svg>
+                    <div id="zdw">最低温: 16°</div>
+                </div>
+            </div>
+        </div>
+        <div id="chart" style="padding-top: -10rem"></div>
+    </div>
+    <div class="marlene-weather-live">
+        <div class="live-container">
+            <ul class="marlene-live-list">
+                <li>
+                    <div>
+                        <svg class="icons-md" aria-hidden="true">
+                            <use xlink:href="#marlene-w-3chuanyixiguan"></use>
+                        </svg>
+                        <div class="marlene-live-title">穿衣</div>
+                    </div>
+                    <div class="marlene-ml-5">
+                        <div class="marlene-live-name" id="cy">炎热</div>
+                        <div class="marlene-live-temp" id="cy_text">天气炎热，建议着短衫、短裙、短裤、薄型T恤衫等清凉夏季服装。</div>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <svg class="icons-md" aria-hidden="true">
+                            <use xlink:href="#marlene-w-shushidu"></use>
+                        </svg>
+                        <div class="marlene-live-title">舒适度</div>
+                    </div>
+                    <div class="marlene-ml-5">
+                        <div class="marlene-live-name" id="ssd">较舒适</div>
+                        <div class="marlene-live-temp" id="ssd_text">白天天气晴好，您在这种天气条件下，会感觉早晚凉爽、舒适，午后偏热。</div>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <svg class="icons-md" aria-hidden="true">
+                            <use xlink:href="#marlene-w-yundong"></use>
+                        </svg>
+                        <div class="marlene-live-title">运动</div>
+                    </div>
+                    <div class="marlene-ml-5">
+                        <div class="marlene-live-name" id="yd">较不宜</div>
+                        <div class="marlene-live-temp" id="yd_text">天气较好，但考虑风力很大，推荐您进行室内运动，若在户外运动请注意避风防晒。</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+</body>
+<script src="//at.alicdn.com/t/font_2846300_9ehkgj8u1j.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!--<script src="./icons.js"></script>-->
+<!--document.querySelector(selector).innerHTML = data-->
+<script>
+    let sstq = {};
+    let qtyb = {};
+    let shzs = {};
+    let zgw = [];
+    let zdw = [];
+    let xq = [];
+
+    function get_sstq(location = '101210111') {
+        fetch('https://devapi.qweather.com/v7/weather/now?key=b25a76309d7f4025a09288537f333cc0&location=' + location)//实时天气
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (myJson) {
+                sstq = myJson;
+                document.querySelector('#wd').innerHTML = sstq.now.temp + "°";//温度
+                document.querySelector('#tq').innerHTML = sstq.now.text;//天气
+                document.querySelector('#qi_icon').classList.add('qi-' + sstq.now.icon);//天气图标
+                document.querySelector('#fx').innerHTML = sstq.now.windDir;//风向
+                document.querySelector('#fl').innerHTML = sstq.now.windScale + '级';//风力
+                document.querySelector('#sd').innerHTML = sstq.now.humidity + '%';//湿度
+                get_7t(location);
+            });
+    }
+
+    function get_7t(location = '101210111') {
+        fetch('https://devapi.qweather.com/v7/weather/7d?key=b25a76309d7f4025a09288537f333cc0&location=' + location)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (myJson) {
+                qtyb = myJson;
+                document.querySelector('#zgw').innerHTML = '最高温: ' + qtyb.daily[0].tempMax + '°';
+                document.querySelector('#zdw').innerHTML = '最低温: ' + qtyb.daily[0].tempMin + '°';
+                //console.log(new Date(qtyb.daily[0].fxDate.replace(/-/g, '/')).getDay())
+
+                for (let i = 0; i <= 6; i++) {
+                    if (i <= 3) {
+                        let nowhour = new Date().getHours();
+                        if (nowhour >= 18 | nowhour <= 6) {
+                            document.querySelector('#qi_icons' + i.toString()).classList.add('qi-' + qtyb.daily[i].iconNight);//天气图标
+                        } else {
+                            document.querySelector('#qi_icons' + i.toString()).classList.add('qi-' + qtyb.daily[i].iconDay);//天气图标
+                        }
+                        document.querySelector('#gdw' + i.toString()).innerHTML = qtyb.daily[i].tempMin + '°~' + qtyb.daily[i].tempMax + '°';
+                    }
+                    switch (new Date(qtyb.daily[i].fxDate.replace(/-/g, '/')).getDay()) {
+                        case 0:
+                            if (i <= 3) {
+                                document.querySelector('#xq' + i.toString()).innerHTML = '星期天';
+                            }
+                            xq.push("星期天");
+                            break;
+                        case 1:
+                            if (i <= 3) {
+                                document.querySelector('#xq' + i.toString()).innerHTML = '星期一';
+                            }
+                            xq.push("星期一");
+                            break;
+                        case 2:
+                            if (i <= 3) {
+                                document.querySelector('#xq' + i.toString()).innerHTML = '星期二';
+                            }
+                            xq.push("星期二");
+                            break;
+                        case 3:
+                            if (i <= 3) {
+                                document.querySelector('#xq' + i.toString()).innerHTML = '星期三';
+                            }
+                            xq.push("星期三");
+                            break;
+                        case 4:
+                            if (i <= 3) {
+                                document.querySelector('#xq' + i.toString()).innerHTML = '星期四';
+                            }
+                            xq.push("星期四");
+                            break;
+                        case 5:
+                            if (i <= 3) {
+                                document.querySelector('#xq' + i.toString()).innerHTML = '星期五';
+                            }
+                            xq.push("星期五");
+                            break;
+                        case 6:
+                            if (i <= 3) {
+                                document.querySelector('#xq' + i.toString()).innerHTML = '星期六';
+                            }
+                            xq.push("星期六");
+                            break;
+                    }
+                    zgw.push(qtyb.daily[i].tempMax)
+                    zdw.push(qtyb.daily[i].tempMin)
+
+                }
+                chart.updateSeries([{
+                    name: '最高温',
+                    data: zgw
+                }, {
+                    name: '最低温',
+                    data: zdw,
+                }])
+
+                chart.updateOptions({
+                    xaxis: {
+                        categories: xq,
+                    },
+                })
+                get_shzs(location);
+            });
+    }
+
+    function get_shzs(location = '101210111') {
+        fetch('https://devapi.qweather.com/v7/indices/1d?key=b25a76309d7f4025a09288537f333cc0&location=' + location + '&type=1,3,5,8,10')//实时天气
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (myJson) {
+                shzs = myJson;
+                document.querySelector('#kq').innerHTML = 'AQI ' + shzs.daily[2].category;
+                document.querySelector('#zwx').innerHTML = shzs.daily[0].category;
+                document.querySelector('#cy').innerHTML = shzs.daily[4].category;
+                document.querySelector('#cy_text').innerHTML = shzs.daily[4].text;
+                document.querySelector('#yd').innerHTML = shzs.daily[3].category;
+                document.querySelector('#yd_text').innerHTML = shzs.daily[3].text;
+                document.querySelector('#ssd').innerHTML = shzs.daily[1].category;
+                document.querySelector('#ssd_text').innerHTML = shzs.daily[1].text;
+            });
+    }
+
+    function get_geo() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(succFunction, errFunction);
+        } else {
+            alert("此浏览器不支持geolocation属性，将默认定位为杭州");
+        }
+    }
+
+    function succFunction(position) {
+        //得到地理位置信息
+        let jwd = position.coords.longitude + "," + position.coords.latitude;
+        fetch('https://geoapi.qweather.com/v2/city/lookup?key=b25a76309d7f4025a09288537f333cc0&location=' + jwd)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (myJson) {
+                document.querySelector('#location').innerHTML = myJson.location[0].name;
+                get_sstq(myJson.location[0].id);
+            });
+
+
+    }
+
+    function errFunction(err) { //错误信息
+        let errs = err.code + ":" + err.message+'\n此浏览器未开启定位功能，将默认定位为杭州';
+        alert(errs);
+        document.querySelector('#location').innerHTML = '杭州市';
+        get_sstq('101210111');
+    }
+
+    //-----------------------------------
+
+    let options = {
+        series: [
+            {
+                name: '最高温',
+                data: [12, 25, 18, 20, 25, 30, 24]
+            }, {
+                name: '最低温',
+                data: [5, 10, 16, 10, 13, 19, 12],
+            }
+        ],
+        chart: {
+            height: 200,
+            width: 414,
+            offsetX: -20,
+            offsetY: 15,
+
+            type: 'area',
+            toolbar: {
+                show: false,
+            },
+
+        },
+        dataLabels: {
+            enabled: false
+        },
+        colors: ['#ee2746', '#3bb5da'],
+        stroke: {
+            curve: 'smooth'
+        },
+        xaxis: {
+            categories: ["今日", "星期五", "星期六", "星期天", "星期一", "星期二", "星期三"],
+            floating: true,
+            lines: {
+                show: false,
+            },
+            labels: {
+                show: false,
+            },
+            axisBorder: {
+                show: false,
+            },
+            axisTicks: {
+                show: false,
+            },
+        },
+        yaxis: {
+            floating: true,
+            lines: {
+                show: false,
+            },
+            labels: {
+                show: false,
+            },
+            axisBorder: {
+                show: false,
+            },
+            axisTicks: {
+                show: false,
+            },
+
+        },
+        noData: {
+            text: '加载中...'
+        },
+        tooltip: {
+
+            theme: 'dark'
+
+        },
+        legend: {
+            show: false,
+            position: 'top',
+            offsetX: 160,
+            offsetY: 20,
+            horizontalAlign: 'right',
+            onItemClick: {
+                toggleDataSeries: true
+            },
+        },
+        fill: {
+            gradient: {
+                enabled: true,
+                opacityFrom: 0.55,
+                opacityTo: 0
+            }
+        },
+        grid: {
+            clipMarkers: false,
+            yaxis: {
+                lines: {
+                    show: false
+                }
+            }
+        },
+    };
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+    get_geo();
+
+    function ChangeChartTooltipDarkMode(x) {
+        if (x.matches) { // 媒体查询
+            chart.updateOptions({
+                tooltip: {
+                    theme: 'light',
+                },
+            });
+        } else {
+            chart.updateOptions({
+                tooltip: {
+                    theme: 'dark',
+                },
+            });
+        }
+    }
+
+    let marlene_dark_mode_check = window.matchMedia("(prefers-color-scheme: light)");
+    ChangeChartTooltipDarkMode(marlene_dark_mode_check);
+    marlene_dark_mode_check.addListener(ChangeChartTooltipDarkMode);
+
+</script>
+</html>
